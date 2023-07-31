@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+    <h1>Spotify Artist Search</h1>
+    <form action="/" method="post">
+        <label for="genre">Genre:</label>
+        <input type="text" name="genre" required>
+        <br>
+        <label for="start_year">Starting year:</label>
+        <input type="number" name="start_year" required>
+        <br>
+        <label for="end_year">Ending year:</label>
+        <input type="number" name="end_year" required>
+        <br>
+        <label for="offsets">Enter a comma-separated list of offsets:</label>
+        <input type="text" name="offsets" required>
+        <br>
+        <input type="submit" value="Search">
+    
+    </form>
+    <br>
+    <button id="downloadBtn" onclick="downloadTableAsCSV()">Download Table</button>
+    <br>
+    <h1>Search Results</h1>
+    <div>
+        {{ table | safe }}
+    </div>
+
+    <!-- JavaScript to handle the download -->
+    <script>
+        function downloadTableAsCSV() {
+            // Get the table HTML
+            var tableHtml = document.querySelector('table').outerHTML;
+
+            // Convert the table to a CSV format
+            var csv = [];
+            var rows = document.querySelectorAll('table tr');
+            for (var i = 0; i < rows.length; i++) {
+                var row = [], cols = rows[i].querySelectorAll('td, th');
+                for (var j = 0; j < cols.length; j++) {
+                    row.push(cols[j].innerText);
+                }
+                csv.push(row.join(','));
+            }
+            var csvContent = 'data:text/csv;charset=utf-8,' + csv.join('\n');
+
+            // Create a link element and trigger the download
+            var encodedUri = encodeURI(csvContent);
+            var link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'search_results.csv');
+            document.body.appendChild(link);
+            link.click();
+        }
+    </script>
+</body>
+</html>
